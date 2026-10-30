@@ -3,6 +3,7 @@
 // No network, no admin rights, no files touched.
 
 import Cocoa
+import ServiceManagement
 
 // MARK: - Private IOKit HID functions, loaded at runtime with C calling convention
 
@@ -204,9 +205,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         menu.addItem(.separator())
+        if #available(macOS 13, *) {
+            let login = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+            login.target = self
+            login.state = SMAppService.mainApp.status == .enabled ? .on : .off
+            menu.addItem(login)
+        }
         let quit = NSMenuItem(title: "Quit TempBar", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         quit.target = NSApp
         menu.addItem(quit)
+    }
+
+    @available(macOS 13, *)
+    @objc private func toggleLaunchAtLogin() {
+        let service = SMAppService.mainApp
+        do {
+            if service.status == .enabled { try service.unregister() } else { try service.register() }
+        } catch {
+            // Usually means macOS wants the user to approve it, so take them to the right settings page.
+            SMAppService.openSystemSettingsLoginItems()
+        }
     }
 
     private func addInfo(_ title: String, to menu: NSMenu) {

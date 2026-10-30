@@ -1,11 +1,13 @@
+<img src="icon.png" width="128" alt="TempBar icon">
+
 # TempBar
 
 A tiny menu bar app that shows your Apple Silicon Mac's CPU temperature, plus battery, SSD and the macOS thermal state when you click it.
 
-<img src="screenshot.png" width="269" alt="TempBar's menu bar item and dropdown">
+<img src="screenshot.png" width="283" alt="TempBar's menu bar item and dropdown">
 
 - The menu bar shows the hottest CPU core. The icon switches from 🌡 to 🔥 when macOS starts throttling (thermal state "Serious" or worse).
-- The dropdown shows the hottest core, the CPU average, battery, SSD, the thermal state, and every temperature sensor the chip reports.
+- The dropdown shows the hottest core, the CPU average, battery, SSD, the thermal state, and every temperature sensor the chip reports, plus a **Launch at Login** switch.
 - It updates every 5 seconds and pauses while the display is asleep. On the tested Mac it uses about 0.1% of one CPU core and 17 MB of memory.
 
 It's one Swift file with no dependencies.
@@ -54,9 +56,13 @@ open TempBar.app
 
 `build.sh` creates `TempBar.app` (and `TempBar.zip` for releases) next to the script.
 
+The app icon is drawn in code by `make_icon.swift`. To change it, edit that file and run `swift make_icon.swift AppIcon.icns`.
+
 ## Launch at login
 
-Go to **System Settings → General → Login Items**, click **+** under "Open at Login", and choose TempBar.
+Click TempBar in the menu bar and choose **Launch at Login** (macOS 13 and later). Choose it again to turn it off.
+
+On macOS 12, add it in **System Preferences → Users & Groups → Login Items** instead.
 
 To quit TempBar, click it in the menu bar and choose **Quit TempBar** (⌘Q).
 
